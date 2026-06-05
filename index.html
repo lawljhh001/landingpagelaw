@@ -1050,29 +1050,13 @@
     };
 
     try {
-      // Form 방식으로 전송 (no-cors 우회)
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = SCRIPT_URL;
-      form.target = 'hidden_iframe';
-
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'data';
-      input.value = JSON.stringify(payload);
-      form.appendChild(input);
-
-      const iframe = document.createElement('iframe');
-      iframe.name = 'hidden_iframe';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-      document.body.appendChild(form);
-      form.submit();
-
-      setTimeout(() => {
-        document.body.removeChild(form);
-        document.body.removeChild(iframe);
-      }, 3000);
+      // fetch 방식으로 전송 (한글 JSON 깨짐 없이 안정 전송)
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
 
     } catch (err) {
       console.warn('전송 오류:', err);
